@@ -1,46 +1,62 @@
 package com.project.guestbook.entity;
 
-import javax.persistence.Basic;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
 
 @Entity
 @Table(name = "guestledger")
 public class Guestledger {
 	    @Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	    private Long entryId;
-
-	    @Column(name = "approval_Status")
+	    private long entryId;
+	    
+		public void setEntryId(long entryId) {
+			this.entryId = entryId;
+		}
+		
+		@Column(name = "approval_Status")
 	    private String approvalStatus;
 	    
 	    @OneToOne
 	    @JoinColumn(name="user_id")
 	    private User enteredby;
 	    
-	    @Lob 
-	    @Basic(fetch = FetchType.LAZY)
 	    @Column(name = "image",nullable = true, length = 64)
-	    private String image;
+	    private String filename;
+	    
+	    private String photosImagePath;
 	    
 	    
-	    public String getImage() {
-			return image;
+	    @Transient
+		public String getPhotosImagePath() {
+	    	if (filename == null)return null;
+	         
+	        return "/user-photos/"+ filename;
 		}
 
 
-		public void setImage(String image) {
-			this.image = image;
+		public void setPhotosImagePath(String photosImagePath) {
+			this.photosImagePath = photosImagePath;
 		}
 
+
+		public String getFilename() {
+			return filename;
+		}
+
+
+		public void setFilename(String filename) {
+			this.filename = filename;
+		}
 
 		@Column(name = "text",columnDefinition = "MEDIUMTEXT")
 	    private String text;

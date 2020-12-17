@@ -15,5 +15,6 @@ public interface GuestRepository extends JpaRepository<Guestledger, Long> {
 	@Query(value="select * from Guestledger where user_id=?1", 
 			  nativeQuery = true)
 	List<Guestledger> getbyEntereduser(int enteredby);
-    
+	
+	//List<Guestledger> findbyUserId(long enteredby);
 }

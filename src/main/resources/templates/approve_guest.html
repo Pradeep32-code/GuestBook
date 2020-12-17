@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Guest Book Management</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Admin Approval page</h1>
+        <hr>
+        <h2>Approve Guest</h2>
+
+        <form action="#" th:action="@{/saveguestEntry}" th:object="${guestledger}" method="POST">
+
+            <!-- Add hidden form field to handle update -->
+            <input type="hidden" th:field="*{entryId}" />
+            <input type="text" th:field="*{approvalStatus}" class="form-control mb-4 col-4">
+            <input type="hidden" th:field="*{image}" class="form-control mb-4 col-4">
+             <input type="hidden" th:field="*{text}" class="form-control mb-4 col-4">
+             <input type="hidden" th:field="*{userid}" />
+            <button type="submit" class="btn btn-info col-2"> Approve Guest</button>
+        </form>
+
+        <hr>
+
+        <a th:href="@{/}"> Back to Guest List</a>
+    </div>
+</body>
+
+</html>

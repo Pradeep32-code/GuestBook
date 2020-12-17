@@ -17,7 +17,7 @@ public class GuestService {
         this.guestRepository.save(guestledger);
     }
 	
-    public List < Guestledger > getAllGuestEntry() {
+    public List <Guestledger> getAllGuestEntry() {
         return guestRepository.findAll();
     }
     
@@ -39,5 +39,11 @@ public class GuestService {
     public List<Guestledger> getbyEntereduser(int userid) {
         return guestRepository.getbyEntereduser(userid);
     }
+    
+    public void saveOrUpdateGuestEntry(Guestledger Guestledger) {
+    	guestRepository.save(Guestledger);
+	}
+	
+	
 
 }

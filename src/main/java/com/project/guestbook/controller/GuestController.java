@@ -9,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,45 +29,44 @@ public class GuestController {
         // save guest entry to database
 		
 		String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-		guestledger.setImage(fileName);
-		guestledger.setApprovalStatus("Pending");
+		guestledger.setFilename(fileName);
 		guestService.saveGuestEntry(guestledger);
 		String uploadDir = "user-photos/" + guestledger.getEntryId();
 		 
         FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
         
-        return "redirect:/";
+        return "home";
     }
 	
-	 @GetMapping("/showFormForApproval/{id}")
-	    public String showFormForApproval(@PathVariable(value = "id") long entryId, Model model) {
+	/* @GetMapping("/showFormForApproval/{entryId}")
+	    public String showFormForApproval(@PathVariable(value = "entryId") long entryId, Model model) {
 
 	        // get Guests from the service
 	    	Guestledger guestledger = guestService.getGuestById(entryId);
 	    	
-	    	guestledger.setApprovalStatus("Approved");
+	    	//guestledger.setApprovalStatus("Approved");
 	    	
 	    	guestService.saveGuestEntry(guestledger);
 
 	        // set Guest as a model attribute to pre-populate the form
 	        model.addAttribute("guestledger", guestledger);
 	        return "adminhome";
-	    }
+	    }*/
 	 
 	// display list of Guests
-	    @GetMapping("/guestsadmin")
+	    @GetMapping("/guest")
 	    public String viewHomePage(Model model) {
 	        model.addAttribute("listGuests", guestService.getAllGuestEntry());
-	        return "adminhome";
+	        return "approve_guest";
 	    }
 	
-	    @GetMapping("/removeGuestEntry/{id}")
-	    public String removeGuestEntry(@PathVariable(value = "id") long entryId) {
+	    /*@GetMapping("/removeGuestEntry/{entryId}")
+	    public String removeGuestEntry(@PathVariable(value = "entryId") long entryId) {
 
 	        // call delete employee method 
 	        this.guestService.removeGuestEntryById(entryId);
 	        return "adminhome";
-	    }
+	    }*/
 	    
 	    @GetMapping("/showMyEntry")
 	    public String showMyEntry(@ModelAttribute("guestledger") int userid,Model model) {

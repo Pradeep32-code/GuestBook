@@ -1,7 +1,7 @@
 package com.project.guestbook.config;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -13,9 +13,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import com.project.guestbook.service.MyUserDetailsService;
 
 @Configuration
-@Order(1)
 @EnableWebSecurity
-public class WebSecurityConfigurationAdmin extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -38,17 +37,19 @@ public class WebSecurityConfigurationAdmin extends WebSecurityConfigurerAdapter 
         http.
                 authorizeRequests()
                 .antMatchers("/").permitAll()
-                .antMatchers("/adminlogin").permitAll()
-                .antMatchers("/registrationadmin").permitAll()
-                .antMatchers("/admin/**").hasAuthority("ADMIN").anyRequest()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/registration").permitAll()
+                .antMatchers("/admin/**").hasAuthority("ADMIN")
+                .antMatchers("/user/**").hasAuthority("USER")
+                .anyRequest()
                 .authenticated().and().csrf().disable().formLogin()
-                .loginPage("/adminlogin").failureUrl("/adminlogin?error=true")
-                .defaultSuccessUrl("/admin/home")
+                .loginPage("/login").failureUrl("/login?error=true")
+                .defaultSuccessUrl("/welcome")
                 .usernameParameter("user_name")
                 .passwordParameter("password")
                 .and().logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/adminlogin").and().exceptionHandling()
+                .logoutSuccessUrl("/login").and().exceptionHandling()
                 .accessDeniedPage("/access-denied");
     }
 

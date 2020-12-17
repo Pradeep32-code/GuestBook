@@ -1,14 +1,15 @@
-/*package com.project.guestbook;
-
-import entity.*;
-import repository.*;
-import service.UserService;
-
+package com.project.guestbook;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import com.project.guestbook.entity.User;
+import com.project.guestbook.repository.RoleRepository;
+import com.project.guestbook.repository.UserRepository;
+import com.project.guestbook.service.UserService;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,13 +34,11 @@ public class UserServiceTest {
         userServiceUnderTest = new UserService(mockUserRepository,
                                                mockRoleRepository,
                                                mockBCryptPasswordEncoder);
-        user = User.builder()
-                .id(1)
-                .name("Gustavo")
-                .lastName("Ponce")
-                .email("test@test.com")
-                .build();
-
+        user.setId(1);
+        user.setName("Pradeep");
+        user.setLastName("Kumar");
+        user.setEmail("test@test.com");
+        
         Mockito.when(mockUserRepository.save(any()))
                 .thenReturn(user);
         Mockito.when(mockUserRepository.findByEmail(anyString()))
@@ -64,10 +63,9 @@ public class UserServiceTest {
         final String email = "test@test.com";
 
         // Run the test
-        User result = userServiceUnderTest.saveUser(User.builder().build());
+        User result = userServiceUnderTest.saveUser(user);
 
         // Verify the results
         assertEquals(email, result.getEmail());
     }
 }
-*/
