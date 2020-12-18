@@ -30,7 +30,19 @@ public class Guestledger {
 	    @JoinColumn(name="user_id")
 	    private User enteredby;
 	    
-	    @Column(name = "image",nullable = true, length = 64)
+	    @Column(name = "picByte", length = 1000)
+		private byte[] picByte;
+	    
+	    public byte[] getPicByte() {
+			return picByte;
+		}
+
+
+		public void setPicByte(byte[] picByte) {
+			this.picByte = picByte;
+		}
+
+		@Column(name = "image",nullable = true, length = 64)
 	    private String filename;
 	    
 	    private String photosImagePath;

@@ -14,7 +14,8 @@
             type: "get",
             url: "http://localhost:8080/approve/"+id,
             success: function (data){
-                alert(data);
+                alert("Approve Successfully");
+                location.reload();
             },
             error: function (xhr, ajaxOptions, thrownError){
 
@@ -28,7 +29,8 @@
             type: "delete",
             url: "http://localhost:8080/remove/"+id,
             success: function (data){
-                alert(data);
+                alert("Removed Sucessfully");
+                location.reload();
             },
             error: function (xhr, ajaxOptions, thrownError){
 

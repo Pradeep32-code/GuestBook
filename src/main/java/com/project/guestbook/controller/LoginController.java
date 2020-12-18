@@ -1,5 +1,5 @@
 package com.project.guestbook.controller;
-import java.io.File;
+
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import com.project.guestbook.entity.Guestledger;
@@ -112,21 +112,13 @@ public class LoginController {
         User user = userService.findUserByUserName(auth.getName());
         guestledger.setEnteredby(user);
         guestledger.setApprovalStatus("Pending");
-        /*//file upload
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS");
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        
-        String fileName = multipartFile.getOriginalFilename();
-        guestledger.setFilename(fileName+sdf.format(timestamp));
-        File convFile = new File(System.getProperty("java.io.tmpdir")+"/"+fileName+sdf.format(timestamp));
-       
-        multipartFile.transferTo(convFile);*/
-        
+     
         //file upload
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS");
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         guestledger.setFilename(fileName);
+        guestledger.setPicByte(multipartFile.getBytes());
         Guestledger guestledger1=guestRepository.save(guestledger);
         String uploadDir = "user-photos/";
         FileUploadUtil.saveFile(uploadDir,fileName,multipartFile);
@@ -140,6 +132,7 @@ public class LoginController {
     }
     
     @RequestMapping(value="/approve/{invite}", method = RequestMethod.GET)
+    @ResponseBody
     public void ApproveInvitation(@PathVariable("invite") String invite){
        long inviteid=Long.parseLong(invite); 
        Guestledger guestledger = guestService.getGuestById(inviteid);
@@ -148,31 +141,16 @@ public class LoginController {
     	
     	guestService.saveGuestEntry(guestledger);
     	
-    	//return "Approved Successfully";
     }
     
     
     
     @RequestMapping(value="/remove/{entryId}",method=RequestMethod.DELETE)
+    @ResponseBody
 	public void removeInvitation(@PathVariable String entryId) {
     	long inviteid=Long.parseLong(entryId); 
     	guestService.removeGuestEntryById(inviteid);
-    	
-    	//return "Entry Removed";
-		
+    		
 	}
-    
-    /*@PostMapping("/company/save")
-	public ResponseEntity<Void> saveOrUpdateCompany(@RequestBody Company company) {
-		crudService.saveOrUpdateCompany(company);
-		return new ResponseEntity<Void>(HttpStatus.OK);
-	}
-
-	@DeleteMapping("/company/delete/{id}")
-	public ResponseEntity<Void> deleteCompany(@PathVariable Integer id) {
-		crudService.deleteCompany(id);
-		return new ResponseEntity<Void>(HttpStatus.OK);
-	}*/
-     
-
+        
 }
