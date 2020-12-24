@@ -8,6 +8,9 @@ import org.springframework.stereotype.Repository;
 
 import com.project.guestbook.entity.Guestledger;
 
+/**
+ * This is Repository class is used to save Guest Entry in database.
+ */
 
 @Repository
 public interface GuestRepository extends JpaRepository<Guestledger, Long> {

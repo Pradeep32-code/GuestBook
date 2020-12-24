@@ -1,6 +1,7 @@
 package com.project.guestbook.service;
 
 import java.util.List;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,11 @@ import org.springframework.stereotype.Service;
 
 import com.project.guestbook.entity.Guestledger;
 import com.project.guestbook.repository.GuestRepository;
+
+/**
+ * This is Service class is used to save different guest entry.
+ */
+
 @Service
 public class GuestService {
 	@Autowired
@@ -43,7 +49,9 @@ public class GuestService {
     public void saveOrUpdateGuestEntry(Guestledger Guestledger) {
     	guestRepository.save(Guestledger);
 	}
-	
-	
+    
+    
+    
+   
 
 }

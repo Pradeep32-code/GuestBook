@@ -14,6 +14,9 @@ import com.project.guestbook.repository.UserRepository;
 import java.util.Arrays;
 import java.util.HashSet;
 
+/**
+ * This is Service class is used for different user Role Saving in DB.
+ */
 @Service
 public class UserService {
 	

@@ -18,6 +18,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * This is Service class is used for different user information.
+ */
 @Service
 public class MyUserDetailsService implements UserDetailsService {
 

@@ -40,6 +40,37 @@
     }
     
     
+    
+    $( document ).ready(function() {
+    	$('form#createevent').on('submit', function() {
+    	    
+    	    var txt=$("#text").val();
+    	    
+    	    var isvalid=true;
+    	    var file = document.getElementById("image");
+    	    
+    	    if(file.files.length == 0 ){ 
+    	    	
+    	    	isvalid=false;
+    	    }else{
+    	    	isvalid=true;
+    	    }
+    	    if(!isvalid){
+    	    if(txt==null || txt=='' || txt===undefined){ 
+    	    	
+    	    	isvalid=false;
+    	    }else{
+    	    	isvalid=true;
+    	    }
+    	    }
+    	    if(!isvalid){ 
+    	    	alert("Please select either Image or Text");
+    	    	return false;
+    	    }
+    	    return true;
+    	});    	
+    });
+    
     </script>
     
        </head>
@@ -55,7 +86,7 @@
     
     <a th:if="${isAdmin == true}" th:href="@{/admin/home}" class="btn btn-md btn-danger pull-right" >AdminHome</a>
     
-    <a th:if="${isAdmin == false}" th:href="@{/user/create-invite}" class="btn btn-md btn-danger pull-right">Create Invitation</a>
+    <a th:if="${isAdmin == false}" th:href="@{/user/create-invite}" class="btn btn-md btn-danger pull-right">Entry</a>
 
     <div class="panel-group" style="margin-top:40px">
         <div class="panel panel-primary">
@@ -70,17 +101,19 @@
         </div>
     </div>
     
-    <div th:if="${isAdmin == false}" class="row">
+    <div th:if="${isAdmin == false || modifyentry != null}" class="row">
     
         <div class="col-md-6 col-md-offset-3">
-            <form autocomplete="off" action="#" th:action="@{/welcome}" th:object="${guestledger}"
+        
+            <form id="createevent" autocomplete="off" action="#" th:action="@{/welcome}" th:object="${guestledger}"
                    method="post" enctype="multipart/form-data" class="form-horizontal"
                   role="form">
-                <h2>Create Invitation</h2>
+                  <input type="hidden" th:if="${modifyentry != null}" name="entryId" th:value="${modifyentry}"/>
+                <h2>Entry</h2>
                 <div class="form-group">
                     <div class="col-sm-9">
                         <input type="file" name="image" accept="image/png, image/jpeg" id="image" placeholder="Image"
-                               class="form-control"/>
+                               class="form-control"/>     
                     </div>
                 </div>
 
@@ -93,7 +126,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-9">
-                        <button type="submit" class="btn btn-primary btn-block">Create Invite</button>
+                        <button type="submit" class="btn btn-primary btn-block">Save</button>
                     </div>
                 </div>
                 
@@ -126,12 +159,13 @@
     <td>
     <a href="#" th:onclick="'return onclickApprove('+${invite.entryId} + ')'">Approve</a>
     <a href="#" th:onclick="'return onclickDelete('+${invite.entryId} + ')'">Remove</a>
+    <a th:href="@{welcome} + '?modifyentry=' + ${invite.entryId}" >Edit</a>
      </td>
 </tr>
 
 </table>
 
 </div>
-    
+   
 </body>
 </html>

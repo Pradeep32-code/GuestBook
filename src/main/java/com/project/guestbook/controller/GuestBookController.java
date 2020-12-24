@@ -1,8 +1,6 @@
 package com.project.guestbook.controller;
 
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -23,8 +21,27 @@ import com.project.guestbook.repository.GuestRepository;
 import com.project.guestbook.service.GuestService;
 import com.project.guestbook.service.UserService;
 
+/**
+* <h1>Guest Book Application!</h1>
+* Guest Book Application consists of 2 types of users.
+* Guest and Administrator.
+* Guests
+User needs to login in order to write a new entry in the guestbook
+Guestbook entry can be either a single image or a text
+
+*Administrator
+View all the entries posted by all the users
+Approve the entries 
+Remove the entries
+Edit the entries
+
+* @author  Pradeep Kumar
+* @version 1.0
+* @since   2020-12-14
+*/
+
 @Controller
-public class LoginController {
+public class GuestBookController {
 
     @Autowired
     private UserService userService;
@@ -34,7 +51,11 @@ public class LoginController {
     
     @Autowired
     GuestService guestService;
-
+    
+    /**
+     * This method is used to view login page. 
+     * @return ModelView Object This returns login page.
+     */
     @RequestMapping(value={"/", "/login"}, method = RequestMethod.GET)
     public ModelAndView login(){
         ModelAndView modelAndView = new ModelAndView();
@@ -42,7 +63,10 @@ public class LoginController {
         return modelAndView;
     }
 
-
+    /**
+     * This method is used to view registration page. 
+     * @return ModelView Object This returns registration page.
+     */
     @RequestMapping(value="/registration", method = RequestMethod.GET)
     public ModelAndView registration(){
         ModelAndView modelAndView = new ModelAndView();
@@ -51,7 +75,13 @@ public class LoginController {
         modelAndView.setViewName("registration");
         return modelAndView;
     }
-
+    
+    /**
+     * This method is used to register on Guest Book Application.
+     * @param User Object.This is the first paramter to createNewUser method
+     * @param BindingResult Object.This is the second paramter to createNewUser method 
+     * @return ModelView Object This returns registration page.
+     */
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public ModelAndView createNewUser(@Valid User user, BindingResult bindingResult) {
         ModelAndView modelAndView = new ModelAndView();
@@ -72,7 +102,11 @@ public class LoginController {
         }
         return modelAndView;
     }
-
+    
+    /**
+     * This method is used to Show Admin Page on Guest Book Application. 
+     * @return ModelView Object This will show admin home page.
+     */
     @RequestMapping(value="/admin/home", method = RequestMethod.GET)
     public ModelAndView home(){
         ModelAndView modelAndView = new ModelAndView();
@@ -85,8 +119,12 @@ public class LoginController {
         return modelAndView;
     }
     
+    /**
+     * This method is used to Show Home Page on Guest Book Application. 
+     * @return ModelView Object This will show User logged in home page.
+     */
     @RequestMapping(value="/welcome", method = RequestMethod.GET)
-    public ModelAndView welcome(){
+    public ModelAndView welcome(@RequestParam(required = false) String modifyentry){
         ModelAndView modelAndView = new ModelAndView();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         modelAndView.addObject("isAdmin",false);
@@ -96,11 +134,20 @@ public class LoginController {
         User user = userService.findUserByUserName(auth.getName());
         modelAndView.addObject("userName", "Welcome " + user.getUserName() + "/" + user.getName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
         modelAndView.addObject("adminMessage","Logged in User Content");
+        modelAndView.addObject("modifyentry",modifyentry);
         modelAndView.addObject("invites",guestRepository.findAll());
         modelAndView.setViewName("welcome");
         return modelAndView;
     }
     
+    /**
+     * This method is used to Provide Guest Entry on Guest Book Application and save in DB and FileSystem. 
+     * @param Guestledger Object.This is the first paramter to createinvite method
+     * @param MultipartFile Object.This is the second paramter to createinvite method
+     * @return ModelView Object This will show User logged in home page.
+     * @exception IOException On input error.
+     * @see IOException
+     */
     @RequestMapping(value="/welcome", method = RequestMethod.POST)
     public ModelAndView createinvite(Guestledger guestledger,@RequestParam("image") MultipartFile multipartFile) throws IOException{
         ModelAndView modelAndView = new ModelAndView();
@@ -112,25 +159,34 @@ public class LoginController {
         User user = userService.findUserByUserName(auth.getName());
         guestledger.setEnteredby(user);
         guestledger.setApprovalStatus("Pending");
-     
-        //file upload
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS");
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        
+        boolean isFileAvailable=false;
+       if(multipartFile!=null && !multipartFile.isEmpty()){
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         guestledger.setFilename(fileName);
         guestledger.setPicByte(multipartFile.getBytes());
-        Guestledger guestledger1=guestRepository.save(guestledger);
+        isFileAvailable=true;
+       }
+        guestRepository.save(guestledger);
+        if(isFileAvailable){
         String uploadDir = "user-photos/";
-        FileUploadUtil.saveFile(uploadDir,fileName,multipartFile);
+        
+        FileUploadUtil.saveFile(uploadDir,guestledger.getFilename(),multipartFile);
+        }
         
         modelAndView.addObject("userName", "Welcome " + user.getUserName() + "/" + user.getName() + " " + user.getLastName() + " (" + user.getEmail() + ")");
         modelAndView.addObject("adminMessage","Logged in User Content");
-        modelAndView.addObject("successMessage","Invite Created");
+        modelAndView.addObject("successMessage","GuestEntry Done");
         modelAndView.addObject("invites",guestRepository.findAll());
         modelAndView.setViewName("welcome");
         return modelAndView;
     }
     
+    /**
+     * This method is used to Approve Guest Entry By Admin on Guest Book Application. 
+     * @param String.This is the first paramter to ApproveInvitation method
+     * @return Nothing.
+     */
     @RequestMapping(value="/approve/{invite}", method = RequestMethod.GET)
     @ResponseBody
     public void ApproveInvitation(@PathVariable("invite") String invite){
@@ -142,9 +198,11 @@ public class LoginController {
     	guestService.saveGuestEntry(guestledger);
     	
     }
-    
-    
-    
+    /**
+     * This method is used to Remove Guest Entry By Admin on Guest Book Application. 
+     * @param String.This is the first paramter to removeInvitation method
+     * @return Nothing.
+     */
     @RequestMapping(value="/remove/{entryId}",method=RequestMethod.DELETE)
     @ResponseBody
 	public void removeInvitation(@PathVariable String entryId) {

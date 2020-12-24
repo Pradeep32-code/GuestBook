@@ -11,6 +11,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+/**
+ * This DTO class is used to save guest entry in database.
+ */
 
 @Entity
 @Table(name = "guestledger")

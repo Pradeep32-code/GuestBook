@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+/**
+ * This DTO class is used to save different user role entry in database.
+ */
+
 @Data
 @Builder
 @AllArgsConstructor

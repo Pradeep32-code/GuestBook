@@ -11,6 +11,10 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
+/**
+ * This DTO class is used to save different user information in database.
+ */
+
 @Data
 @Builder
 @AllArgsConstructor
